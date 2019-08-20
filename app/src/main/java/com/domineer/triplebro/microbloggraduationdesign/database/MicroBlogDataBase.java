@@ -26,12 +26,12 @@ public class MicroBlogDataBase extends SQLiteOpenHelper {
         db.execSQL("create table adminInfo(_id Integer primary key autoincrement,phone_number varchar(20),password varchar(20))");
 
         //发布信息表
-        db.execSQL("create table submitInfo(_id Integer primary key autoincrement,phone_number varchar(20),nickname varchar(20),user_head varchar(200)," +
-                "submit_content varchar(500),FOREIGN KEY (user_id) REFERENCES userInfo(_id))");
+        db.execSQL("create table issueInfo(_id Integer primary key autoincrement,user_id Integer," +
+                "issue_content varchar(500),issue_time varchar(100),FOREIGN KEY (user_id) REFERENCES userInfo(_id))");
 
         //发布图片表
-        db.execSQL("create table submitImageInfo(_id Integer primary key autoincrement,submit_id Integer,submit_image varchar(200)," +
-                "FOREIGN KEY (submit_id) REFERENCES submitInfo(_id))");
+        db.execSQL("create table issueImageInfo(_id Integer primary key autoincrement,issue_id Integer,issue_image varchar(200)," +
+                "FOREIGN KEY (issue_id) REFERENCES issueInfo(_id))");
 
         //关注表
         db.execSQL("create table careInfo(_id Integer primary key autoincrement,cared_user_id Integer,user_id Integer" +

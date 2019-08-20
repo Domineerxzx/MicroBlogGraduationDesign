@@ -11,8 +11,10 @@ import android.widget.FrameLayout;
 import com.domineer.triplebro.microbloggraduationdesign.R;
 import com.domineer.triplebro.microbloggraduationdesign.fragments.BottomFragment;
 import com.domineer.triplebro.microbloggraduationdesign.fragments.HotFragment;
+import com.domineer.triplebro.microbloggraduationdesign.properties.ProjectProperties;
 import com.domineer.triplebro.microbloggraduationdesign.services.NetworkConnectionService;
 import com.domineer.triplebro.microbloggraduationdesign.utils.PermissionUtil;
+import com.domineer.triplebro.microbloggraduationdesign.utils.ossUtils.InitOssClient;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initData() {
+        //InitOssClient.initOssClient(this, ProjectProperties.TOKEN_ADDRESS,ProjectProperties.ENDPOINT);
         Intent service = new Intent(this, NetworkConnectionService.class);
         startService(service);
         PermissionUtil.requestPower(this, this, "android.permission.CAMERA"); //请求权限

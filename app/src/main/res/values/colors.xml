@@ -9,4 +9,6 @@
     <color name="colorAppStyle">#FFBB00</color>
     <color name="colorGray">#888888</color>
     <color name="colorLine">#BEBEBE</color>
+    <color name="colorAppBackground">#e6e6e6</color>
+    <color name="colorBaffle">#51000000</color>
 </resources>
