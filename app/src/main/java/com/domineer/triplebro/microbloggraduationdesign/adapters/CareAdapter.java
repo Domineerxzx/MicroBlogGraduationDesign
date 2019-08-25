@@ -44,13 +44,7 @@ public class CareAdapter extends RecyclerView.Adapter<CareAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        File file = new File(userInfoList.get(i).getUserHead());
-        if (file.length() > 0){
-            Glide.with(context).load(userInfoList.get(i).getUserHead()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(viewHolder.iv_user_head);
-        }else{
-            //OssHandler ossHandler = new OssHandler(context, viewHolder.iv_photo_wall);
-            //DownloadUtils.downloadFileFromOss(file,ossHandler, ProjectProperties.BUCKET_NAME,"MicroBlog/"+ userInfoList.get(i).getIssueImage());
-        }
+        Glide.with(context).load(userInfoList.get(i).getUserHead()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(viewHolder.iv_user_head);
     }
 
     @Override
@@ -73,12 +67,12 @@ public class CareAdapter extends RecyclerView.Adapter<CareAdapter.ViewHolder> {
         private void initView(View itemView) {
             iv_user_head = itemView.findViewById(R.id.iv_user_head);
             iv_user_head.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            onItemClickListener.onItemClick(v,getPosition());
-            onItemClickListener.onItemLongClick(v,getPosition());
+            onItemClickListener.onItemClick(v, getPosition());
         }
     }
 }

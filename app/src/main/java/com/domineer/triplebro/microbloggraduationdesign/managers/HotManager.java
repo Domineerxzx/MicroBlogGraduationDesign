@@ -55,4 +55,11 @@ public class HotManager {
         issueImageInfoList = dataBaseProvider.getIssueImageInfoListByIssueInfoList(issueInfoList);
         return issueImageInfoList;
     }
+
+    public List<IssueImageInfo> getIssueImageInfoListByIssueInfo(IssueInfo issueInfo) {
+        List<IssueImageInfo> issueImageInfoList = new ArrayList<>();
+        DataBaseProvider dataBaseProvider = new DataBaseProvider(context);
+        issueImageInfoList = dataBaseProvider.getIssueImageInfoListByIssueInfo(issueInfo);
+        return issueImageInfoList;
+    }
 }

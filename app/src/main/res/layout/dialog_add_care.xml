@@ -36,7 +36,7 @@
         android:gravity="center"
         android:layout_marginTop="10dp"
         android:textColor="#fff"
-        android:background="@drawable/shape_pay"/>
+        android:background="@drawable/shape_user_button"/>
     <TextView
         android:layout_below="@id/tv_add_care"
         android:id="@+id/tv_message"

@@ -17,9 +17,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.domineer.triplebro.microbloggraduationdesign.R;
+import com.domineer.triplebro.microbloggraduationdesign.activities.ChatContentActivity;
 import com.domineer.triplebro.microbloggraduationdesign.fragments.IssueFragment;
 import com.domineer.triplebro.microbloggraduationdesign.fragments.MyselfFragment;
 import com.domineer.triplebro.microbloggraduationdesign.managers.CareManager;
+import com.domineer.triplebro.microbloggraduationdesign.models.ChatInfo;
 import com.domineer.triplebro.microbloggraduationdesign.models.UserInfo;
 import com.domineer.triplebro.microbloggraduationdesign.properties.ProjectProperties;
 import com.domineer.triplebro.microbloggraduationdesign.utils.PermissionUtil;
@@ -32,7 +34,7 @@ public class AddCareDialogUtil {
         View view = View.inflate(context, R.layout.dialog_add_care, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         final AlertDialog dialog = builder.setView(view).create();
-        ImageView iv_user_head = (ImageView) view.findViewById(R.id.iv_user_head);
+        final ImageView iv_user_head = (ImageView) view.findViewById(R.id.iv_user_head);
         TextView tv_nickname = (TextView) view.findViewById(R.id.tv_nickname);
         final TextView tv_add_care = (TextView) view.findViewById(R.id.tv_add_care);
         TextView tv_message = (TextView) view.findViewById(R.id.tv_message);
@@ -41,7 +43,7 @@ public class AddCareDialogUtil {
         SharedPreferences localUserInfo = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         final int user_id = localUserInfo.getInt("user_id", 0);
         final CareManager careManager = new CareManager(context);
-        boolean isCared = careManager.queryIsCared(userInfo.get_id(), user_id);
+        final boolean isCared = careManager.queryIsCared(userInfo.get_id(), user_id);
         if(isCared){
             tv_add_care.setText("取消关注");
             tv_add_care.setClickable(false);
@@ -54,8 +56,13 @@ public class AddCareDialogUtil {
             @Override
             public void onClick(View v) {
                 if(tv_add_care.getText().equals("关注")){
-                    careManager.addCare(userInfo.get_id(), user_id);
-                    Toast.makeText(context, "关注成功", Toast.LENGTH_SHORT).show();
+//                    if(userInfo.get_id()== user_id){
+//                        Toast.makeText(context, "不能关注自己哦", Toast.LENGTH_SHORT).show();
+//                        return;
+//                    }else{
+                        careManager.addCare(userInfo.get_id(), user_id);
+                        Toast.makeText(context, "关注成功", Toast.LENGTH_SHORT).show();
+                    //}
                 }else{
                     careManager.deleteCare(userInfo.get_id(),user_id);
                     Toast.makeText(context, "取消关注成功", Toast.LENGTH_SHORT).show();
@@ -66,6 +73,17 @@ public class AddCareDialogUtil {
         tv_message.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!isCared){
+                    Toast.makeText(context,"还没关注呢，不能留言",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(userInfo.get_id()== user_id){
+                    Toast.makeText(context, "不能给自己留言哦", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Intent chat_content = new Intent(context, ChatContentActivity.class);
+                chat_content.putExtra("chatUserInfo",userInfo);
+                context.startActivity(chat_content);
                 dialog.dismiss();
             }
         });

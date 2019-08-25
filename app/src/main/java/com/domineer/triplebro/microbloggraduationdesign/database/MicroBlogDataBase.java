@@ -47,6 +47,10 @@ public class MicroBlogDataBase extends SQLiteOpenHelper {
         db.execSQL("create table searchHistoryInfo(_id Integer primary key autoincrement,user_id Integer,search_content varchar(100),search_count Integer" +
                 ",FOREIGN KEY (user_id) REFERENCES userInfo(_id))");
 
+        //评论表
+        db.execSQL("create table commentInfo(_id Integer primary key autoincrement,user_id Integer,issue_id Integer,comment_content varchar(2000),time varchar(100),comment_id Integer" +
+                ",FOREIGN KEY (user_id) REFERENCES userInfo(_id)" +
+                ",FOREIGN KEY (issue_id) REFERENCES issueInfo(_id))");
 
     }
 

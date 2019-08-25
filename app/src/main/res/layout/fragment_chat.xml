@@ -4,10 +4,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <RelativeLayout
+        android:id="@+id/rl_title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorWhite">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="聊天"
+            android:textSize="16dp"
+            android:textColor="@color/colorBlack"/>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#9dbebebe" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/lv_chat"
+        android:scrollbars="none"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="4"
-        android:textSize="100dp"/>
+        android:layout_below="@id/rl_title"/>
 
 </RelativeLayout>

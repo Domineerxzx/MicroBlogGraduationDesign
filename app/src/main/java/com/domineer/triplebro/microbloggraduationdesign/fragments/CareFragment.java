@@ -1,6 +1,7 @@
 package com.domineer.triplebro.microbloggraduationdesign.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,9 +11,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.domineer.triplebro.microbloggraduationdesign.R;
+import com.domineer.triplebro.microbloggraduationdesign.activities.IssueContentActivity;
 import com.domineer.triplebro.microbloggraduationdesign.adapters.CareAdapter;
 import com.domineer.triplebro.microbloggraduationdesign.adapters.HotAdapter;
 import com.domineer.triplebro.microbloggraduationdesign.interfaces.OnItemClickListener;
@@ -65,11 +68,13 @@ public class CareFragment extends Fragment implements OnItemClickListener {
         careAdapter = new CareAdapter(getActivity(), caredUserInfoList);
         rv_care.setAdapter(careAdapter);
         hotManager = new HotManager(getActivity());
-        issueInfoList = hotManager.getIssueInfoListByUserId(caredUserInfoList.get(0).get_id());
-        issueImageInfoListByIssueInfoList = hotManager.getIssueImageInfoListByIssueInfoList(issueInfoList);
-        hotAdapter = new HotAdapter(getActivity(), issueInfoList, issueImageInfoListByIssueInfoList);
-        hotAdapter.setHotManager(hotManager);
-        lv_care.setAdapter(hotAdapter);
+        if(caredUserInfoList.size()>0){
+            issueInfoList = hotManager.getIssueInfoListByUserId(caredUserInfoList.get(0).get_id());
+            issueImageInfoListByIssueInfoList = hotManager.getIssueImageInfoListByIssueInfoList(issueInfoList);
+            hotAdapter = new HotAdapter(getActivity(), issueInfoList, issueImageInfoListByIssueInfoList);
+            hotAdapter.setHotManager(hotManager);
+            lv_care.setAdapter(hotAdapter);
+        }
     }
 
     private void setOnClickListener() {
@@ -80,11 +85,11 @@ public class CareFragment extends Fragment implements OnItemClickListener {
     public void onItemClick(View view, int position) {
         issueInfoList = hotManager.getIssueInfoListByUserId(caredUserInfoList.get(position).get_id());
         issueImageInfoListByIssueInfoList = hotManager.getIssueImageInfoListByIssueInfoList(issueInfoList);
-        hotAdapter.setIssueInfoListAndIssueImageInfoList(issueInfoList,issueImageInfoListByIssueInfoList);
+        hotAdapter.setIssueInfoListAndIssueImageInfoList(issueInfoList, issueImageInfoListByIssueInfoList);
     }
 
     @Override
-    public void onItemLongClick(View view, int position) {
+    public void onItemLongClick(View view) {
 
     }
 

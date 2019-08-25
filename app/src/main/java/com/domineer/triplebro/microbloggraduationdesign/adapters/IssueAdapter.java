@@ -70,6 +70,9 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.ViewHolder> 
             @Override
             public void onClick(View v) {
                 data.remove(i);
+                if(i == 8){
+                    data.add("");
+                }
                 notifyDataSetChanged();
             }
         });
@@ -77,6 +80,9 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueAdapter.ViewHolder> 
             @Override
             public void onClick(View v) {
                 data.remove(i);
+                if(i == 8){
+                    data.add("");
+                }
                 notifyDataSetChanged();
             }
         });

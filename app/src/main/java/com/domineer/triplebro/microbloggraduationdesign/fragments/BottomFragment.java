@@ -160,36 +160,36 @@ public class BottomFragment extends Fragment implements View.OnClickListener {
     private void changeImageForButton(Button lastFunctionButton, Button onClickButton) {
         switch (lastFunctionButton.getId()) {
             case R.id.bt_hot:
-                lastFunctionButton.setBackgroundResource(R.mipmap.ic_launcher);
+                lastFunctionButton.setBackgroundResource(R.mipmap.hot_unclick);
                 break;
             case R.id.bt_care:
-                lastFunctionButton.setBackgroundResource(R.mipmap.ic_launcher);
+                lastFunctionButton.setBackgroundResource(R.mipmap.care_unclick);
                 break;
             case R.id.bt_issue:
-                lastFunctionButton.setBackgroundResource(R.mipmap.ic_launcher);
+                lastFunctionButton.setBackgroundResource(R.mipmap.issue_unclick);
                 break;
             case R.id.bt_chat:
-                lastFunctionButton.setBackgroundResource(R.mipmap.ic_launcher);
+                lastFunctionButton.setBackgroundResource(R.mipmap.chat_unclick);
                 break;
             case R.id.bt_myself:
-                lastFunctionButton.setBackgroundResource(R.mipmap.ic_launcher);
+                lastFunctionButton.setBackgroundResource(R.mipmap.myself_unclick);
                 break;
         }
         switch (onClickButton.getId()) {
             case R.id.bt_hot:
-                onClickButton.setBackgroundResource(R.mipmap.ic_launcher_round);
+                onClickButton.setBackgroundResource(R.mipmap.hot_click);
                 break;
             case R.id.bt_care:
-                onClickButton.setBackgroundResource(R.mipmap.ic_launcher_round);
+                onClickButton.setBackgroundResource(R.mipmap.care_click);
                 break;
             case R.id.bt_issue:
-                onClickButton.setBackgroundResource(R.mipmap.ic_launcher_round);
+                onClickButton.setBackgroundResource(R.mipmap.issue_click);
                 break;
             case R.id.bt_chat:
-                onClickButton.setBackgroundResource(R.mipmap.ic_launcher_round);
+                onClickButton.setBackgroundResource(R.mipmap.chat_click);
                 break;
             case R.id.bt_myself:
-                onClickButton.setBackgroundResource(R.mipmap.ic_launcher_round);
+                onClickButton.setBackgroundResource(R.mipmap.myself_click);
                 break;
         }
     this.lastFunctionButton =onClickButton;

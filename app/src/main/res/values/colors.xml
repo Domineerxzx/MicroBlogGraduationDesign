@@ -11,4 +11,5 @@
     <color name="colorLine">#BEBEBE</color>
     <color name="colorAppBackground">#e6e6e6</color>
     <color name="colorBaffle">#51000000</color>
+    <color name="colorAdmin">#0A5598</color>
 </resources>

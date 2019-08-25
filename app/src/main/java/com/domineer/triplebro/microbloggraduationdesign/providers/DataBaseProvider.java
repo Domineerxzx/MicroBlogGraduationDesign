@@ -7,8 +7,11 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.domineer.triplebro.microbloggraduationdesign.database.MicroBlogDataBase;
 import com.domineer.triplebro.microbloggraduationdesign.managers.HotManager;
+import com.domineer.triplebro.microbloggraduationdesign.models.ChatInfo;
+import com.domineer.triplebro.microbloggraduationdesign.models.CommentInfo;
 import com.domineer.triplebro.microbloggraduationdesign.models.IssueImageInfo;
 import com.domineer.triplebro.microbloggraduationdesign.models.IssueInfo;
+import com.domineer.triplebro.microbloggraduationdesign.models.SearchHistoryInfo;
 import com.domineer.triplebro.microbloggraduationdesign.models.UserInfo;
 
 import java.util.ArrayList;
@@ -124,32 +127,45 @@ public class DataBaseProvider implements DataProvider {
     public void addCare(int id, int user_id) {
         SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("cared_user_id",id);
-        contentValues.put("user_id",user_id);
-        db.insert("careInfo",null,contentValues);
+        contentValues.put("cared_user_id", id);
+        contentValues.put("user_id", user_id);
+        db.insert("careInfo", null, contentValues);
     }
 
     public boolean queryIsCared(int id, int user_id) {
         SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
-        Cursor careInfoCursor = db.query("careInfo", null, "cared_user_id = ? or cared_user_id = ? or user_id = ? or user_id = ?", new String[]{String.valueOf(id), String.valueOf(user_id), String.valueOf(id), String.valueOf(user_id)}, null, null, null);
-        if(careInfoCursor != null && careInfoCursor.getCount()>0){
-            return true;
-        }else{
+        Cursor careInfoCursor = db.query("careInfo", null, "user_id = ?", new String[]{String.valueOf(user_id)}, null, null, null);
+        if (careInfoCursor != null && careInfoCursor.getCount() > 0) {
+            while (careInfoCursor.moveToNext()) {
+                if (careInfoCursor.getInt(1) == id) {
+                    careInfoCursor.close();
+                    db.close();
+                    return true;
+                }
+            }
+            careInfoCursor.close();
+            db.close();
+            return false;
+        } else {
+            if (careInfoCursor != null) {
+                careInfoCursor.close();
+            }
+            db.close();
             return false;
         }
     }
 
     public void deleteCare(int id, int user_id) {
         SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
-        db.delete("careInfo","user_id = ? and cared_user_id = ?",new String[]{String.valueOf(user_id), String.valueOf(id)});
+        db.delete("careInfo", "user_id = ? and cared_user_id = ?", new String[]{String.valueOf(user_id), String.valueOf(id)});
     }
 
     public List<UserInfo> queryAllUserInfoListByUserId(int user_id) {
         SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
         List<Integer> careUserIdList = new ArrayList<>();
         Cursor caredIdInfoCursor = db.query("careInfo", new String[]{"cared_user_id"}, "user_id = ?", new String[]{String.valueOf(user_id)}, null, null, null);
-        if(caredIdInfoCursor!= null && caredIdInfoCursor.getCount()>0){
-            while (caredIdInfoCursor.moveToNext()){
+        if (caredIdInfoCursor != null && caredIdInfoCursor.getCount() > 0) {
+            while (caredIdInfoCursor.moveToNext()) {
                 careUserIdList.add(caredIdInfoCursor.getInt(0));
             }
         }
@@ -159,7 +175,7 @@ public class DataBaseProvider implements DataProvider {
         db.close();
         HotManager hotManager = new HotManager(context);
         List<UserInfo> userInfoList = new ArrayList<>();
-        for (Integer integer:careUserIdList) {
+        for (Integer integer : careUserIdList) {
             UserInfo userInfo = hotManager.queryUserInfoById(integer);
             userInfoList.add(userInfo);
         }
@@ -185,5 +201,256 @@ public class DataBaseProvider implements DataProvider {
         }
         db.close();
         return issueInfoList;
+    }
+
+    public List<UserInfo> getChatUserInfoList(int user_id) {
+        SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
+        List<UserInfo> chatUserInfoList = new ArrayList<>();
+        List<Integer> chatUserIdList = new ArrayList<>();
+        Cursor chatUserInfoCursor = db.query(true, "chatInfo", new String[]{"user_id_two", "user_id_one"}, "user_id_one = ? or user_id_one = ?", new String[]{String.valueOf(user_id), String.valueOf(user_id)}, null, null, null, null);
+        if (chatUserInfoCursor != null && chatUserInfoCursor.getCount() > 0) {
+            while (chatUserInfoCursor.moveToNext()) {
+                int user_id_chat = chatUserInfoCursor.getInt(0);
+                if (user_id != user_id_chat) {
+                    chatUserIdList.add(Integer.valueOf(user_id_chat));
+                }
+            }
+        }
+        if (chatUserInfoCursor != null) {
+            chatUserInfoCursor.close();
+        }
+        db.close();
+        for (Integer userId : chatUserIdList) {
+            UserInfo userInfo = queryUserInfoById(userId);
+            chatUserInfoList.add(userInfo);
+        }
+        return chatUserInfoList;
+    }
+
+    public ChatInfo getChatInfo(int id, int user_id) {
+        SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
+        ChatInfo chatInfo = new ChatInfo();
+        Cursor chatInfoCursor = db.query("chatInfo", null, "user_id_one = ? or user_id_two = ?", new String[]{String.valueOf(user_id), String.valueOf(user_id)}, null, null, "_id DESC");
+        if (chatInfoCursor != null && chatInfoCursor.getCount() > 0) {
+            while (chatInfoCursor.moveToNext()) {
+                if (chatInfoCursor.getInt(1) == id || chatInfoCursor.getInt(2) == id) {
+                    chatInfo.set_id(chatInfoCursor.getInt(0));
+                    chatInfo.setUserIdOne(chatInfoCursor.getInt(1));
+                    chatInfo.setUserIdTwo(chatInfoCursor.getInt(2));
+                    chatInfo.setChatContent(chatInfoCursor.getString(3));
+                    chatInfo.setTime(chatInfoCursor.getString(4));
+                    return chatInfo;
+                }
+            }
+        }
+        if (chatInfoCursor != null) {
+            chatInfoCursor.close();
+        }
+        db.close();
+        return new ChatInfo();
+    }
+
+    public List<ChatInfo> getChatInfoList(int id, int user_id) {
+        SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
+        List<ChatInfo> chatInfoList = new ArrayList<>();
+        Cursor chatInfoCursor = db.query("chatInfo", null, "user_id_one = ? or user_id_two = ?", new String[]{String.valueOf(user_id), String.valueOf(user_id)}, null, null, null);
+        if (chatInfoCursor != null && chatInfoCursor.getCount() > 0) {
+            while (chatInfoCursor.moveToNext()) {
+                if (chatInfoCursor.getInt(1) == id || chatInfoCursor.getInt(2) == id) {
+                    ChatInfo chatInfo = new ChatInfo();
+                    chatInfo.set_id(chatInfoCursor.getInt(0));
+                    chatInfo.setUserIdOne(chatInfoCursor.getInt(1));
+                    chatInfo.setUserIdTwo(chatInfoCursor.getInt(2));
+                    chatInfo.setChatContent(chatInfoCursor.getString(3));
+                    chatInfo.setTime(chatInfoCursor.getString(4));
+                    chatInfoList.add(chatInfo);
+                }
+            }
+        }
+        if (chatInfoCursor != null) {
+            chatInfoCursor.close();
+        }
+        db.close();
+        return chatInfoList;
+    }
+
+    public void addChatInfo(int id, int user_id, String chat_content, String time) {
+        SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("user_id_one", user_id);
+        contentValues.put("user_id_two", id);
+        contentValues.put("chat_content", chat_content);
+        contentValues.put("time", time);
+        db.insert("chatInfo", null, contentValues);
+    }
+
+    public List<UserInfo> getAllUserInfoList() {
+        SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
+        List<UserInfo> userInfoList = new ArrayList<>();
+        Cursor userInfoCursor = db.query("userInfo", null, null, null, null, null, null);
+        if (userInfoCursor != null && userInfoCursor.getCount() > 0) {
+            while (userInfoCursor.moveToNext()) {
+                UserInfo userInfo = new UserInfo();
+                userInfo.set_id(userInfoCursor.getInt(0));
+                userInfo.setPhoneNumber(userInfoCursor.getString(1));
+                userInfo.setPassword(userInfoCursor.getString(2));
+                userInfo.setNickname(userInfoCursor.getString(3));
+                userInfo.setUserHead(userInfoCursor.getString(4));
+                userInfo.setIsShutUp(userInfoCursor.getInt(5));
+                userInfoList.add(userInfo);
+            }
+        }
+        if (userInfoCursor != null) {
+            userInfoCursor.close();
+        }
+        db.close();
+        return userInfoList;
+    }
+
+    public void updateUserShutUpInfo(int id, int isShutUp) {
+        SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("is_shut_up", isShutUp);
+        db.update("userInfo", contentValues, "_id = ?", new String[]{String.valueOf(id)});
+
+    }
+
+    public List<SearchHistoryInfo> getSearchHistoryById(int user_id) {
+        SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
+        List<SearchHistoryInfo> searchHistoryInfoList = new ArrayList<>();
+        Cursor searchHistoryInfoCursor = db.query("searchHistoryInfo", null, "user_id = ?", new String[]{String.valueOf(user_id)}, null, null, null);
+        if (searchHistoryInfoCursor != null && searchHistoryInfoCursor.getCount() > 0) {
+            while (searchHistoryInfoCursor.moveToNext()) {
+                SearchHistoryInfo searchHistoryInfo = new SearchHistoryInfo();
+                searchHistoryInfo.set_id(searchHistoryInfoCursor.getInt(0));
+                searchHistoryInfo.setUserId(searchHistoryInfoCursor.getInt(1));
+                searchHistoryInfo.setSearchContent(searchHistoryInfoCursor.getString(2));
+                searchHistoryInfo.setSearchCount(searchHistoryInfoCursor.getInt(3));
+                searchHistoryInfoList.add(searchHistoryInfo);
+            }
+        }
+        if (searchHistoryInfoCursor != null) {
+            searchHistoryInfoCursor.close();
+        }
+        db.close();
+        return searchHistoryInfoList;
+    }
+
+    public void deleteSearchInfoById(int id) {
+        SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
+        db.delete("searchHistoryInfo", "_id = ?", new String[]{String.valueOf(id)});
+    }
+
+    public void deleteAllSearchInfo(int user_id) {
+        SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
+        db.delete("searchHistoryInfo", "user_id = ?", new String[]{String.valueOf(user_id)});
+    }
+
+    public List<IssueInfo> searchIssueInfoList(String search) {
+        List<IssueInfo> issueInfoList = new ArrayList<>();
+        SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
+        Cursor issueInfoCursor = db.query("issueInfo", null, "issue_content like ?", new String[]{"%" + search + "%"}, null, null, null);
+        if (issueInfoCursor != null && issueInfoCursor.getCount() > 0) {
+            while (issueInfoCursor.moveToNext()) {
+                IssueInfo issueInfo = new IssueInfo();
+                issueInfo.set_id(issueInfoCursor.getInt(0));
+                issueInfo.setUserId(issueInfoCursor.getInt(1));
+                issueInfo.setIssueContent(issueInfoCursor.getString(2));
+                issueInfo.setIssueTime(issueInfoCursor.getString(3));
+                issueInfoList.add(issueInfo);
+            }
+        }
+        if (issueInfoCursor != null) {
+            issueInfoCursor.close();
+        }
+        db.close();
+        return issueInfoList;
+    }
+
+    public List<List<IssueImageInfo>> searchIssueImageInfoList(List<IssueInfo> searchIssueInfoList) {
+        List<List<IssueImageInfo>> issueImageInfoListByIssueInfoList = getIssueImageInfoListByIssueInfoList(searchIssueInfoList);
+        return issueImageInfoListByIssueInfoList;
+    }
+
+    public void addSearchHistory(int user_id, String search) {
+        SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("user_id", user_id);
+        contentValues.put("search_content", search);
+        contentValues.put("search_count", 1);
+        db.insert("searchHistoryInfo", null, contentValues);
+    }
+
+    public List<IssueImageInfo> getIssueImageInfoListByIssueInfo(IssueInfo issueInfo) {
+        SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
+        List<IssueImageInfo> issueImageInfoList = new ArrayList<>();
+        Cursor issueImageInfoCursor = db.query("issueImageInfo", null, "issue_id = ?", new String[]{String.valueOf(issueInfo.get_id())}, null, null, null);
+        if (issueImageInfoCursor != null && issueImageInfoCursor.getCount() > 0) {
+            while (issueImageInfoCursor.moveToNext()) {
+                IssueImageInfo issueImageInfo = new IssueImageInfo();
+                issueImageInfo.set_id(issueImageInfoCursor.getInt(0));
+                issueImageInfo.setIssueId(issueImageInfoCursor.getInt(1));
+                issueImageInfo.setIssueImage(issueImageInfoCursor.getString(2));
+                issueImageInfoList.add(issueImageInfo);
+            }
+        }
+        if (issueImageInfoCursor != null) {
+            issueImageInfoCursor.close();
+        }
+        db.close();
+        return issueImageInfoList;
+    }
+
+    public List<CommentInfo> getCommentInfoList(int id) {
+        SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
+        List<CommentInfo> commentInfoList = new ArrayList<>();
+        Cursor commentInfoCursor = db.query("commentInfo", null, "issue_id = ?", new String[]{String.valueOf(id)}, null, null, "_id desc");
+        if (commentInfoCursor != null && commentInfoCursor.getCount() > 0) {
+            while (commentInfoCursor.moveToNext()) {
+                if (commentInfoCursor.getInt(5) == 0) {
+                    CommentInfo commentInfo = new CommentInfo();
+                    commentInfo.set_id(commentInfoCursor.getInt(0));
+                    commentInfo.setUserId(commentInfoCursor.getInt(1));
+                    commentInfo.setIssueId(commentInfoCursor.getInt(2));
+                    commentInfo.setCommentContent(commentInfoCursor.getString(3));
+                    commentInfo.setTime(commentInfoCursor.getString(4));
+                    commentInfo.setCommentId(commentInfoCursor.getInt(5));
+                    commentInfoList.add(commentInfo);
+                }
+            }
+        }
+        if (commentInfoCursor != null) {
+            commentInfoCursor.close();
+        }
+        db.close();
+        return commentInfoList;
+    }
+
+    public List<CommentInfo> getCommentInCommentInfoList(int issueId, int id) {
+        SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
+        List<CommentInfo> commentInCommentInfoList = new ArrayList<>();
+        Cursor commentInfoCursor = db.query("commentInfo", null, "issue_id = ? and comment_id = ?", new String[]{String.valueOf(issueId), String.valueOf(id)}, null, null, "_id desc");
+        if (commentInfoCursor != null && commentInfoCursor.getCount() > 0) {
+            while (commentInfoCursor.moveToNext()) {
+                CommentInfo commentInfo = new CommentInfo();
+                commentInfo.set_id(commentInfoCursor.getInt(0));
+                commentInfo.setUserId(commentInfoCursor.getInt(1));
+                commentInfo.setIssueId(commentInfoCursor.getInt(2));
+                commentInfo.setCommentContent(commentInfoCursor.getString(3));
+                commentInfo.setTime(commentInfoCursor.getString(4));
+                commentInfo.setCommentId(commentInfoCursor.getInt(5));
+                commentInCommentInfoList.add(commentInfo);
+            }
+        }
+        if (commentInfoCursor != null) {
+            commentInfoCursor.close();
+        }
+        db.close();
+        return commentInCommentInfoList;
+    }
+
+    public void addCommentInfo(ContentValues contentValues) {
+        SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
+        db.insert("commentInfo",null,contentValues);
     }
 }

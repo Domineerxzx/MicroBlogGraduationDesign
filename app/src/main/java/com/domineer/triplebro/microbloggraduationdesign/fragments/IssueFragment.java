@@ -46,6 +46,7 @@ public class IssueFragment extends Fragment implements View.OnClickListener, OnI
     private long timeStamp;
     private IssueManager issueManager;
     private int user_id;
+    private int is_shut_up;
 
     @Nullable
     @Override
@@ -60,6 +61,7 @@ public class IssueFragment extends Fragment implements View.OnClickListener, OnI
     private void initData() {
         userInfo = getActivity().getSharedPreferences("userInfo", MODE_PRIVATE);
         user_id = userInfo.getInt("user_id", 0);
+        is_shut_up = userInfo.getInt("isShutUp", -1);
         issueAdapter = new IssueAdapter(getActivity(), new ArrayList<String>());
         rv_issue.setAdapter(issueAdapter);
         issueAdapter.setOnItemClickListener(this);
@@ -81,6 +83,10 @@ public class IssueFragment extends Fragment implements View.OnClickListener, OnI
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bt_issue:
+                if(is_shut_up == 1){
+                    Toast.makeText(getActivity(), "您已被禁言，请联系管理员解禁", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 IssueInfo issueInfo = new IssueInfo();
                 issueInfo.setUserId(user_id);
                 issueInfo.setIssueContent(et_issue_content.getText().toString().trim());
@@ -116,7 +122,7 @@ public class IssueFragment extends Fragment implements View.OnClickListener, OnI
     }
 
     @Override
-    public void onItemLongClick(View view, int position) {
+    public void onItemLongClick(View view) {
 
     }
 

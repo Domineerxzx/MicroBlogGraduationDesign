@@ -77,13 +77,13 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                 }
                 break;
             case R.id.bt_admin_login:
-                bt_admin_login.setBackgroundResource(R.drawable.shape_pay);
+                bt_admin_login.setBackgroundResource(R.drawable.shape_user_button);
                 bt_user_login.setBackgroundResource(R.drawable.shape_alpha_card);
                 userType = ProjectProperties.ADMIN;
                 break;
             case R.id.bt_user_login:
                 bt_admin_login.setBackgroundResource(R.drawable.shape_alpha_card);
-                bt_user_login.setBackgroundResource(R.drawable.shape_pay);
+                bt_user_login.setBackgroundResource(R.drawable.shape_user_button);
                 userType = ProjectProperties.USER;
                 break;
             default:

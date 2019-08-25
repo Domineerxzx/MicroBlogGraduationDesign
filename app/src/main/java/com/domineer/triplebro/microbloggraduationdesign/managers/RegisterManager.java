@@ -34,9 +34,8 @@ public class RegisterManager implements ServiceConnection {
         registerState = STATE_GET_REQUEST;
     }
 
-    public void register(String phone_number, /*String request_code,*/ String password, String nickname, int userType){
+    public void register(String phone_number, String password, String nickname, int userType){
         this.phone_number = phone_number;
-        /*this.request_code = request_code;*/
         this.password = password;
         this.nickname = nickname;
         this.userType = userType;

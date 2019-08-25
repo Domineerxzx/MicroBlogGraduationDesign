@@ -30,6 +30,7 @@ public class HotFragment extends Fragment implements View.OnClickListener {
     private TextView tv_search;
     private ImageView iv_search;
     private FrameLayout fl_search;
+    private String[] titles;
 
     @Nullable
     @Override
@@ -50,7 +51,7 @@ public class HotFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initData() {
-        String titles[] = new String[]{"全部", "明星", "搞笑", "情感", "美女", "体育", "影视"};
+        titles = new String[]{"全部", "明星", "搞笑", "情感", "美女", "体育", "影视"};
         nl_hot.setViewPager(getActivity(), titles, vp_hot, R.color.colorGray, R.color.colorAppStyle, 16, 16, 0, 0, true);
         nl_hot.setBgLine(getActivity(), 1, R.color.colorLine);
         nl_hot.setNavLine(getActivity(), 2, R.color.colorAppStyle, 0);
@@ -78,6 +79,7 @@ public class HotFragment extends Fragment implements View.OnClickListener {
         hotFragmentList.add(hotContentFragment);
         pagerAdapter = new ViewPagerAdapter(getChildFragmentManager(), hotFragmentList);
         vp_hot.setAdapter(pagerAdapter);
+        vp_hot.setClickable(false);
     }
 
     private void setOnClickListener() {

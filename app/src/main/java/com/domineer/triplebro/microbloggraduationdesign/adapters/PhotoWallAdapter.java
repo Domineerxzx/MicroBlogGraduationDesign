@@ -44,13 +44,7 @@ public class PhotoWallAdapter extends RecyclerView.Adapter<PhotoWallAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        File file = new File(issueImageInfoList.get(i).getIssueImage());
-        if (file.length() > 0){
             Glide.with(context).load(issueImageInfoList.get(i).getIssueImage()).into(viewHolder.iv_photo_wall);
-        }else{
-            //OssHandler ossHandler = new OssHandler(context, viewHolder.iv_photo_wall);
-            //DownloadUtils.downloadFileFromOss(file,ossHandler, ProjectProperties.BUCKET_NAME,"MicroBlog/"+ issueImageInfoList.get(i).getIssueImage());
-        }
     }
 
     @Override
@@ -77,6 +71,7 @@ public class PhotoWallAdapter extends RecyclerView.Adapter<PhotoWallAdapter.View
 
         @Override
         public void onClick(View v) {
+
         }
     }
 }
