@@ -67,11 +67,12 @@ public class PhotoWallAdapter extends RecyclerView.Adapter<PhotoWallAdapter.View
         private void initView(View itemView) {
             iv_photo_wall = itemView.findViewById(R.id.iv_photo_wall);
             iv_photo_wall.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-
+            onItemClickListener.onItemClick(v,getPosition());
         }
     }
 }

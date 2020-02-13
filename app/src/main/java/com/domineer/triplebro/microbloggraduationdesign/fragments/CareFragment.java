@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.domineer.triplebro.microbloggraduationdesign.R;
 import com.domineer.triplebro.microbloggraduationdesign.activities.IssueContentActivity;
@@ -64,6 +65,10 @@ public class CareFragment extends Fragment implements OnItemClickListener {
         careManager = new CareManager(getActivity());
         localUserInfo = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         user_id = localUserInfo.getInt("user_id", 0);
+        if(user_id == 0){
+            Toast.makeText(getActivity(), "还没登录呢，请先去登录再来！！！", Toast.LENGTH_SHORT).show();
+            return;
+        }
         caredUserInfoList = careManager.queryAllUserInfoListByUserId(user_id);
         careAdapter = new CareAdapter(getActivity(), caredUserInfoList);
         rv_care.setAdapter(careAdapter);

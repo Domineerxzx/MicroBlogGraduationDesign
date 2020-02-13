@@ -2,13 +2,22 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAppBackground">
+    android:background="@color/colorWhite">
 
     <RelativeLayout
         android:id="@+id/rl_myself"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/iv_setting"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@mipmap/setting" />
 
         <RelativeLayout
             android:id="@+id/rl_user"
@@ -26,6 +35,7 @@
                 android:layout_centerHorizontal="true"
                 android:background="@mipmap/user_head"
                 android:scaleType="centerCrop" />
+
 
             <LinearLayout
                 android:id="@+id/ll_user_info"
@@ -59,79 +69,114 @@
             </LinearLayout>
         </RelativeLayout>
 
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rl_myself" >
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/rl_user"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/shape_white_card"
-            android:orientation="vertical"
-            android:padding="10dp">
+            android:layout_height="60dp"
+            android:background="@color/colorWhite"
+            android:padding="5dp"
+            android:id="@+id/ll_read_history">
 
-
-            <RelativeLayout
-                android:id="@+id/rl_setting"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/iv_setting"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_centerVertical="true"
-                    android:background="@mipmap/setting" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="8"
+                android:background="@drawable/shape_user_button"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:id="@+id/ll_my_look">
 
                 <TextView
-                    android:id="@+id/tv_setting"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_toRightOf="@id/iv_setting"
-                    android:text="设置"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="12dp" />
+                    android:layout_gravity="center"
+                    android:text="我看过的"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="15dp"
+                    android:textStyle="bold"/>
 
-                <ImageView
-                    android:id="@+id/iv_setting_more"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:background="@mipmap/next" />
-            </RelativeLayout>
+                <TextView
+                    android:id="@+id/tv_my_look"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text=""
+                    android:textColor="@color/colorWhite"
+                    android:textSize="15dp"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="20dp"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"/>
 
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="8"
+                android:background="@drawable/shape_alpha_card"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:id="@+id/ll_look_me">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="看过我的"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="15dp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/tv_look_me"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text=""
+                    android:textColor="@color/colorWhite"
+                    android:textSize="15dp"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="20dp"/>
+            </LinearLayout>
         </LinearLayout>
 
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/ll_read_history"
+            android:scrollbars="none"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/lv_myself"/>
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/rl_user_head_large"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:background="@color/colorBaffle">
+        android:background="@color/colorBaffle"
+        android:visibility="gone">
 
         <ImageView
+            android:id="@+id/iv_user_head_large"
             android:layout_width="match_parent"
             android:layout_height="400dp"
-            android:layout_centerVertical="true"
-            android:id="@+id/iv_user_head_large"/>
+            android:layout_centerVertical="true" />
 
         <ImageView
             android:id="@+id/iv_close_user_head_large"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
             android:layout_marginBottom="30dp"
-            android:background="@mipmap/close"/>
+            android:background="@mipmap/close" />
 
     </RelativeLayout>
 

@@ -52,6 +52,9 @@ public class MicroBlogDataBase extends SQLiteOpenHelper {
                 ",FOREIGN KEY (user_id) REFERENCES userInfo(_id)" +
                 ",FOREIGN KEY (issue_id) REFERENCES issueInfo(_id))");
 
+        //浏览历史表
+        db.execSQL("create table readHistoryInfo(_id Integer primary key autoincrement,user_id Integer,issue_id Integer,author_id Integer" +
+                ",FOREIGN KEY (user_id) REFERENCES userInfo(_id),FOREIGN KEY (issue_id) REFERENCES issueInfo(_id),FOREIGN KEY (author_id) REFERENCES userInfo(_id))");
     }
 
     @Override

@@ -62,6 +62,9 @@ public class IssueFragment extends Fragment implements View.OnClickListener, OnI
         userInfo = getActivity().getSharedPreferences("userInfo", MODE_PRIVATE);
         user_id = userInfo.getInt("user_id", 0);
         is_shut_up = userInfo.getInt("isShutUp", -1);
+        if(user_id == 0){
+            Toast.makeText(getActivity(), "还没登录呢，请先去登录再来！！！", Toast.LENGTH_SHORT).show();
+        }
         issueAdapter = new IssueAdapter(getActivity(), new ArrayList<String>());
         rv_issue.setAdapter(issueAdapter);
         issueAdapter.setOnItemClickListener(this);

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,12 +25,19 @@ import com.bumptech.glide.request.RequestOptions;
 import com.domineer.triplebro.microbloggraduationdesign.R;
 import com.domineer.triplebro.microbloggraduationdesign.activities.LoginActivity;
 import com.domineer.triplebro.microbloggraduationdesign.activities.SettingActivity;
+import com.domineer.triplebro.microbloggraduationdesign.adapters.HotAdapter;
 import com.domineer.triplebro.microbloggraduationdesign.database.MicroBlogDataBase;
+import com.domineer.triplebro.microbloggraduationdesign.managers.HotManager;
+import com.domineer.triplebro.microbloggraduationdesign.managers.MySelfManager;
+import com.domineer.triplebro.microbloggraduationdesign.models.IssueImageInfo;
+import com.domineer.triplebro.microbloggraduationdesign.models.IssueInfo;
 import com.domineer.triplebro.microbloggraduationdesign.properties.ProjectProperties;
 import com.domineer.triplebro.microbloggraduationdesign.utils.dialogUtils.ChooseUserHeadDialogUtil;
 import com.domineer.triplebro.microbloggraduationdesign.utils.imageUtils.RealPathFromUriUtils;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -45,18 +53,15 @@ public class MyselfFragment extends Fragment implements View.OnClickListener, Vi
     private ImageView iv_contact_us;
     private ImageView iv_contact_us_more;
     private ImageView iv_setting;
-    private ImageView iv_setting_more;
     private RelativeLayout rl_collection;
     private RelativeLayout rl_push_or_pull;
     private RelativeLayout rl_contact_us;
-    private RelativeLayout rl_setting;
     private LinearLayout ll_user_info;
     private TextView tv_nickname;
     private TextView tv_username;
     private TextView tv_collection;
     private TextView tv_push_or_pull;
     private TextView tv_contact_us;
-    private TextView tv_setting;
     private RelativeLayout rl_user_head_large;
     private ImageView iv_user_head_large;
     private ImageView iv_close_user_head_large;
@@ -64,6 +69,21 @@ public class MyselfFragment extends Fragment implements View.OnClickListener, Vi
     private String username;
     private String nickname;
     private String userHead;
+    private TextView tv_my_look;
+    private TextView tv_look_me;
+    private ListView lv_myself;
+    private MySelfManager mySelfManager;
+    private int user_id;
+    private int lookMeCount;
+    private int myLookCount;
+    private List<IssueInfo> myLookIssueInfoList;
+    private List<IssueInfo> lookMeIssueInfoList;
+    private LinearLayout ll_my_look;
+    private LinearLayout ll_look_me;
+    private List<List<IssueImageInfo>> lookMeIssueImageInfoList;
+    private HotAdapter hotAdapter;
+    private List<List<IssueImageInfo>> myLookIssueImageInfoList;
+    private HotManager hotManager;
 
     @Nullable
     @Override
@@ -84,15 +104,18 @@ public class MyselfFragment extends Fragment implements View.OnClickListener, Vi
     private void initView() {
         iv_user_head = (ImageView) fragment_myself.findViewById(R.id.iv_user_head);
         iv_setting = (ImageView) fragment_myself.findViewById(R.id.iv_setting);
-        iv_setting_more = (ImageView) fragment_myself.findViewById(R.id.iv_setting_more);
-        rl_setting = (RelativeLayout) fragment_myself.findViewById(R.id.rl_setting);
+        iv_setting.bringToFront();
         ll_user_info = (LinearLayout) fragment_myself.findViewById(R.id.ll_user_info);
         tv_nickname = (TextView) fragment_myself.findViewById(R.id.tv_nickname);
         tv_username = (TextView) fragment_myself.findViewById(R.id.tv_username);
-        tv_setting = (TextView) fragment_myself.findViewById(R.id.tv_setting);
         rl_user_head_large = (RelativeLayout) fragment_myself.findViewById(R.id.rl_user_head_large);
         iv_user_head_large = (ImageView) fragment_myself.findViewById(R.id.iv_user_head_large);
         iv_close_user_head_large = (ImageView) fragment_myself.findViewById(R.id.iv_close_user_head_large);
+        tv_my_look = (TextView) fragment_myself.findViewById(R.id.tv_my_look);
+        tv_look_me = (TextView) fragment_myself.findViewById(R.id.tv_look_me);
+        lv_myself = (ListView) fragment_myself.findViewById(R.id.lv_myself);
+        ll_my_look = (LinearLayout) fragment_myself.findViewById(R.id.ll_my_look);
+        ll_look_me = (LinearLayout) fragment_myself.findViewById(R.id.ll_look_me);
     }
 
     private void initData() {
@@ -100,6 +123,7 @@ public class MyselfFragment extends Fragment implements View.OnClickListener, Vi
         username = userInfo.getString("phone_number", "");
         nickname = userInfo.getString("nickname", "");
         userHead = userInfo.getString("userHead", "");
+        user_id = userInfo.getInt("user_id", -1);
         if (TextUtils.isEmpty(username) && TextUtils.isEmpty(nickname)) {
             tv_username.setText(R.string.usernameDefault);
             tv_nickname.setText(R.string.nicknameDefault);
@@ -112,21 +136,34 @@ public class MyselfFragment extends Fragment implements View.OnClickListener, Vi
         } else {
             Glide.with(getActivity()).load(userHead).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(iv_user_head);
         }
+        mySelfManager = new MySelfManager(getActivity());
+        lookMeCount = mySelfManager.getLookMeCount(user_id);
+        myLookCount = mySelfManager.getMyLookCount(user_id);
+        tv_look_me.setText(String.valueOf(lookMeCount));
+        tv_my_look.setText(String.valueOf(myLookCount));
+        hotAdapter = new HotAdapter(getActivity(), new ArrayList<IssueInfo>(), new ArrayList<List<IssueImageInfo>>());
+        hotManager = new HotManager(getActivity());
+        hotAdapter.setHotManager(hotManager);
+        lv_myself.setAdapter(hotAdapter);
+        myLookIssueInfoList = mySelfManager.getMyLookIssueInfoList(user_id);
+        myLookIssueImageInfoList = mySelfManager.getMyLookIssueImageInfoList(myLookIssueInfoList);
+        hotAdapter.setIssueInfoListAndIssueImageInfoList(myLookIssueInfoList,myLookIssueImageInfoList);
     }
 
     private void setOnClickListener() {
         iv_user_head.setOnClickListener(this);
         iv_setting.setOnClickListener(this);
-        iv_setting_more.setOnClickListener(this);
-        rl_setting.setOnClickListener(this);
         tv_nickname.setOnClickListener(this);
         tv_username.setOnClickListener(this);
-        tv_setting.setOnClickListener(this);
         ll_user_info.setOnClickListener(this);
         iv_user_head.setOnLongClickListener(this);
         rl_user_head_large.setOnClickListener(this);
         iv_user_head_large.setOnLongClickListener(this);
         iv_close_user_head_large.setOnClickListener(this);
+        ll_look_me.setOnClickListener(this);
+        ll_my_look.setOnClickListener(this);
+        tv_my_look.setOnClickListener(this);
+        tv_look_me.setOnClickListener(this);
     }
 
     @Override
@@ -145,20 +182,30 @@ public class MyselfFragment extends Fragment implements View.OnClickListener, Vi
                     Toast.makeText(getActivity(), "长按头像可查看大头像", Toast.LENGTH_SHORT).show();
                 }
                 break;
-            case R.id.rl_setting:
             case R.id.iv_setting:
-            case R.id.tv_setting:
-            case R.id.iv_setting_more:
                 Intent setting = new Intent(getActivity(), SettingActivity.class);
                 getActivity().startActivity(setting);
                 break;
             case R.id.iv_close_user_head_large:
-                rl_user_head_large.setVisibility(View.GONE);
-                setClickableTrue();
-                break;
             case R.id.rl_user_head_large:
                 rl_user_head_large.setVisibility(View.GONE);
                 setClickableTrue();
+                break;
+            case R.id.ll_look_me:
+            case R.id.tv_look_me:
+                ll_look_me.setBackgroundResource(R.drawable.shape_user_button);
+                ll_my_look.setBackgroundResource(R.drawable.shape_alpha_card);
+                lookMeIssueInfoList = mySelfManager.getLookMeIssueInfoList(user_id);
+                lookMeIssueImageInfoList = mySelfManager.getLookMeIssueImageInfoList(lookMeIssueInfoList);
+                hotAdapter.setIssueInfoListAndIssueImageInfoList(lookMeIssueInfoList,lookMeIssueImageInfoList);
+                break;
+            case R.id.ll_my_look:
+            case R.id.tv_my_look:
+                ll_my_look.setBackgroundResource(R.drawable.shape_user_button);
+                ll_look_me.setBackgroundResource(R.drawable.shape_alpha_card);
+                myLookIssueInfoList = mySelfManager.getMyLookIssueInfoList(user_id);
+                myLookIssueImageInfoList = mySelfManager.getMyLookIssueImageInfoList(myLookIssueInfoList);
+                hotAdapter.setIssueInfoListAndIssueImageInfoList(myLookIssueInfoList,myLookIssueImageInfoList);
                 break;
         }
     }
@@ -189,23 +236,25 @@ public class MyselfFragment extends Fragment implements View.OnClickListener, Vi
     private void setClickableFalse() {
         iv_user_head.setClickable(false);
         iv_setting.setClickable(false);
-        iv_setting_more.setClickable(false);
-        rl_setting.setClickable(false);
         tv_nickname.setClickable(false);
         tv_username.setClickable(false);
-        tv_setting.setClickable(false);
         ll_user_info.setClickable(false);
+        ll_look_me.setClickable(false);
+        ll_my_look.setClickable(false);
+        tv_my_look.setClickable(false);
+        tv_look_me.setClickable(false);
     }
 
     private void setClickableTrue() {
         iv_user_head.setClickable(true);
         iv_setting.setClickable(true);
-        iv_setting_more.setClickable(true);
-        rl_setting.setClickable(true);
         tv_nickname.setClickable(true);
         tv_username.setClickable(true);
-        tv_setting.setClickable(true);
         ll_user_info.setClickable(true);
+        ll_look_me.setClickable(true);
+        ll_my_look.setClickable(true);
+        tv_my_look.setClickable(true);
+        tv_look_me.setClickable(true);
     }
 
     @Override

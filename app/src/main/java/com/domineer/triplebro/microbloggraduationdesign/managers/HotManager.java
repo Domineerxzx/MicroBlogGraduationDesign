@@ -62,4 +62,14 @@ public class HotManager {
         issueImageInfoList = dataBaseProvider.getIssueImageInfoListByIssueInfo(issueInfo);
         return issueImageInfoList;
     }
+
+    public void addOrUpdateReadHistory(int user_id, int issue_id, int author_id) {
+        DataBaseProvider dataBaseProvider = new DataBaseProvider(context);
+        dataBaseProvider.addOrUpdateReadHistory(user_id,issue_id,author_id);
+    }
+
+    public void deleteIssueInfo(IssueInfo issueInfo) {
+        DataBaseProvider dataBaseProvider = new DataBaseProvider(context);
+        dataBaseProvider.deleteIssueInfo(issueInfo);
+    }
 }

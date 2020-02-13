@@ -33,4 +33,9 @@ public class AdminManager {
         DataBaseProvider dataBaseProvider = new DataBaseProvider(context);
         dataBaseProvider.updateUserShutUpInfo(id,isShutUp);
     }
+
+    public void deleteUser(int user_id) {
+        DataBaseProvider dataBaseProvider = new DataBaseProvider(context);
+        dataBaseProvider.deleteUser(user_id);
+    }
 }

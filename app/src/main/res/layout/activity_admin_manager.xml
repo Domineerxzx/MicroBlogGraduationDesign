@@ -35,4 +35,34 @@
         android:layout_marginRight="50dp"
         android:layout_marginTop="20dp"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/tv_delete_issue"
+        android:text="删 除 发 布 信 息"
+        android:textColor="@color/colorWhite"
+        android:background="@drawable/shape_admin_button"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="15dp"
+        android:layout_below="@id/tv_shut_up"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/tv_delete_user"
+        android:text="永 久 注 销 账 号"
+        android:textColor="@color/colorWhite"
+        android:background="@drawable/shape_admin_button"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="15dp"
+        android:layout_below="@id/tv_delete_issue"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="20dp"/>
+
 </RelativeLayout>

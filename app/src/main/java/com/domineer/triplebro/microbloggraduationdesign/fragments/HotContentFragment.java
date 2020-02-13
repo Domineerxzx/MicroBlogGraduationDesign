@@ -25,7 +25,7 @@ import java.util.List;
  * ----------为梦想启航---------
  * --Set Sell For Your Dream--
  */
-public class HotContentFragment extends Fragment {
+public class HotContentFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private View fragment_hot_content;
     private ListView lv_hot;
@@ -50,7 +50,12 @@ public class HotContentFragment extends Fragment {
         fragment_hot_content = inflater.inflate(R.layout.fragment_hot_content, null);
         initView();
         initData();
+        setOnClickListener();
         return fragment_hot_content;
+    }
+
+    private void setOnClickListener() {
+        lv_hot.setOnItemClickListener(this);
     }
 
     private void initView() {
@@ -64,5 +69,13 @@ public class HotContentFragment extends Fragment {
         hotAdapter = new HotAdapter(getActivity(), issueInfoList, issueImageInfoList);
         hotAdapter.setHotManager(hotManager);
         lv_hot.setAdapter(hotAdapter);
+    }
+
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent(getActivity(), IssueContentActivity.class);
+        intent.putExtra("issueInfo",issueInfoList.get(position));
+        getActivity().startActivity(intent);
     }
 }

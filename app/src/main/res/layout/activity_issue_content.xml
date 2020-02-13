@@ -91,14 +91,14 @@
                 android:textColor="@color/colorLine"
                 android:textSize="12dp" />
 
-            <ImageView
+            <!--<ImageView
                 android:id="@+id/iv_share"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_alignParentRight="true"
                 android:layout_marginTop="20dp"
                 android:layout_marginRight="20dp"
-                android:background="@mipmap/share" />
+                android:background="@mipmap/share" />-->
 
             <TextView
                 android:id="@+id/tv_issue_content"

@@ -451,6 +451,145 @@ public class DataBaseProvider implements DataProvider {
 
     public void addCommentInfo(ContentValues contentValues) {
         SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
-        db.insert("commentInfo",null,contentValues);
+        db.insert("commentInfo", null, contentValues);
+    }
+
+    public void addOrUpdateReadHistory(int user_id, int issue_id, int author_id) {
+        SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("user_id", user_id);
+        contentValues.put("issue_id", issue_id);
+        contentValues.put("author_id", author_id);
+        db.insert("readHistoryInfo", null, contentValues);
+    }
+
+    public int getLookMeCount(int user_id) {
+        SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
+        Cursor readHistoryInfoCursor = db.query("readHistoryInfo", new String[]{"author_id", "count(*)"}, "author_id = ?", new String[]{String.valueOf(user_id)}, "author_id", null, null);
+        if (readHistoryInfoCursor != null && readHistoryInfoCursor.getCount() > 0) {
+            readHistoryInfoCursor.moveToNext();
+            return readHistoryInfoCursor.getInt(1);
+        }
+        return 0;
+    }
+
+    public int getMyLookCount(int user_id) {
+        SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
+        Cursor readHistoryInfoCursor = db.query("readHistoryInfo", new String[]{"user_id", "count(*)"}, "user_id = ?", new String[]{String.valueOf(user_id)}, "user_id", null, null);
+        if (readHistoryInfoCursor != null && readHistoryInfoCursor.getCount() > 0) {
+            readHistoryInfoCursor.moveToNext();
+            return readHistoryInfoCursor.getInt(1);
+        }
+        return 0;
+    }
+
+    public List<IssueInfo> getLookMeIssueInfoList(int user_id) {
+        SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
+        Cursor readHistoryInfoCursor = db.query("readHistoryInfo", null, "author_id = ?", new String[]{String.valueOf(user_id)}, null, null, null);
+        List<Integer> issueIdList = new ArrayList<Integer>();
+        if (readHistoryInfoCursor != null && readHistoryInfoCursor.getCount() > 0) {
+            while (readHistoryInfoCursor.moveToNext()) {
+                int issueId = readHistoryInfoCursor.getInt(2);
+                boolean contains = issueIdList.contains(issueId);
+                if(!contains){
+                    issueIdList.add(issueId);
+                }
+            }
+        }
+        if (readHistoryInfoCursor != null) {
+            readHistoryInfoCursor.close();
+        }
+        List<IssueInfo> issueInfoList = new ArrayList<>();
+        for (int issue_id : issueIdList) {
+            Cursor issueInfoCursor = db.query("issueInfo", null, "_id = ?", new String[]{String.valueOf(issue_id)}, null, null, null);
+            if (issueInfoCursor != null && issueInfoCursor.getCount() > 0) {
+                issueInfoCursor.moveToNext();
+                IssueInfo issueInfo = new IssueInfo();
+                issueInfo.set_id(issueInfoCursor.getInt(0));
+                issueInfo.setUserId(issueInfoCursor.getInt(1));
+                issueInfo.setIssueContent(issueInfoCursor.getString(2));
+                issueInfo.setIssueTime(issueInfoCursor.getString(3));
+                issueInfoList.add(issueInfo);
+            }
+            if (issueInfoCursor != null) {
+                issueInfoCursor.close();
+            }
+        }
+        db.close();
+        return issueInfoList;
+    }
+
+    public List<IssueInfo> getMyLookIssueInfoList(int user_id) {
+        SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
+        Cursor readHistoryInfoCursor = db.query("readHistoryInfo", null, "user_id = ?", new String[]{String.valueOf(user_id)}, null, null, null);
+        List<Integer> issueIdList = new ArrayList<Integer>();
+        if (readHistoryInfoCursor != null && readHistoryInfoCursor.getCount() > 0) {
+            while (readHistoryInfoCursor.moveToNext()) {
+                int issueId = readHistoryInfoCursor.getInt(2);
+                boolean contains = issueIdList.contains(issueId);
+                if(!contains){
+                    issueIdList.add(issueId);
+                }
+            }
+        }
+        if (readHistoryInfoCursor != null) {
+            readHistoryInfoCursor.close();
+        }
+        List<IssueInfo> issueInfoList = new ArrayList<>();
+        for (int issue_id : issueIdList) {
+            Cursor issueInfoCursor = db.query("issueInfo", null, "_id = ?", new String[]{String.valueOf(issue_id)}, null, null, null);
+            if (issueInfoCursor != null && issueInfoCursor.getCount() > 0) {
+                issueInfoCursor.moveToNext();
+                IssueInfo issueInfo = new IssueInfo();
+                issueInfo.set_id(issueInfoCursor.getInt(0));
+                issueInfo.setUserId(issueInfoCursor.getInt(1));
+                issueInfo.setIssueContent(issueInfoCursor.getString(2));
+                issueInfo.setIssueTime(issueInfoCursor.getString(3));
+                issueInfoList.add(issueInfo);
+            }
+            if (issueInfoCursor != null) {
+                issueInfoCursor.close();
+            }
+        }
+        db.close();
+        return issueInfoList;
+    }
+
+    public List<List<IssueImageInfo>> getLookMeIssueImageInfoList(List<IssueInfo> lookMeIssueInfoList) {
+        List<List<IssueImageInfo>> lookMeIssueImageInfoList = new ArrayList<>();
+        for (IssueInfo issueInfo : lookMeIssueInfoList) {
+            List<IssueImageInfo> issueImageInfoListByIssueInfo = getIssueImageInfoListByIssueInfo(issueInfo);
+            lookMeIssueImageInfoList.add(issueImageInfoListByIssueInfo);
+        }
+        return lookMeIssueImageInfoList;
+    }
+
+    public List<List<IssueImageInfo>> getMyLookIssueImageInfoList(List<IssueInfo> myLookIssueInfoList) {
+        List<List<IssueImageInfo>> lookMeIssueImageInfoList = new ArrayList<>();
+        for (IssueInfo issueInfo : myLookIssueInfoList) {
+            List<IssueImageInfo> issueImageInfoListByIssueInfo = getIssueImageInfoListByIssueInfo(issueInfo);
+            lookMeIssueImageInfoList.add(issueImageInfoListByIssueInfo);
+        }
+        return lookMeIssueImageInfoList;
+    }
+
+    public void deleteIssueInfo(IssueInfo issueInfo) {
+        SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
+        db.delete("commentInfo","issue_id = ?",new String[]{String.valueOf(issueInfo.get_id())});
+        db.delete("readHistoryInfo","issue_id = ?",new String[]{String.valueOf(issueInfo.get_id())});
+        db.delete("issueImageInfo","issue_id = ?",new String[]{String.valueOf(issueInfo.get_id())});
+        db.delete("issueInfo","_id = ?",new String[]{String.valueOf(issueInfo.get_id())});
+    }
+
+    public void deleteUser(int user_id) {
+        SQLiteDatabase db = microBlogDataBase.getWritableDatabase();
+        db.delete("commentInfo","user_id = ?",new String[]{String.valueOf(user_id)});
+        db.delete("readHistoryInfo","user_id = ? or author_id = ?",new String[]{String.valueOf(user_id),String.valueOf(user_id)});
+        db.delete("issueImageInfo","user_id = ?",new String[]{String.valueOf(user_id)});
+        db.delete("issueInfo","user_id = ?",new String[]{String.valueOf(user_id)});
+        db.delete("searchHistoryInfo","user_id = ?",new String[]{String.valueOf(user_id)});
+        db.delete("chatInfo","user_id_one = ? or user_id_two = ?",new String[]{String.valueOf(user_id),String.valueOf(user_id)});
+        db.delete("careInfo","cared_user_id = ?",new String[]{String.valueOf(user_id)});
+        db.delete("userInfo","_id = ?",new String[]{String.valueOf(user_id)});
     }
 }

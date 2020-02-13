@@ -16,7 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activities.ShutUpActivity"/>
+        <activity android:name=".activities.DeleteUserActivity"></activity>
+        <activity android:name=".activities.DeleteIssueActivity" />
+        <activity android:name=".activities.ShutUpActivity" />
         <activity android:name=".activities.ChatContentActivity" />
         <activity android:name=".activities.IssueContentActivity" />
         <activity android:name=".activities.SettingActivity" />

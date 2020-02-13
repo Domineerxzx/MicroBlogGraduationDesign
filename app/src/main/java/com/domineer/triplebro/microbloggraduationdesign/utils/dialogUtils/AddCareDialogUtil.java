@@ -38,16 +38,21 @@ public class AddCareDialogUtil {
         TextView tv_nickname = (TextView) view.findViewById(R.id.tv_nickname);
         final TextView tv_add_care = (TextView) view.findViewById(R.id.tv_add_care);
         TextView tv_message = (TextView) view.findViewById(R.id.tv_message);
-        Glide.with(context).load(userInfo.getUserHead()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(iv_user_head);
+        if (userInfo.getUserHead() != null && userInfo.getUserHead().length() != 0) {
+            Glide.with(context).load(userInfo.getUserHead()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(iv_user_head);
+        }else{
+            Glide.with(context).load(R.drawable.user_head_default).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(iv_user_head);
+        }
+
         tv_nickname.setText(userInfo.getNickname());
         SharedPreferences localUserInfo = context.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         final int user_id = localUserInfo.getInt("user_id", 0);
         final CareManager careManager = new CareManager(context);
         final boolean isCared = careManager.queryIsCared(userInfo.get_id(), user_id);
-        if(isCared){
+        if (isCared) {
             tv_add_care.setText("取消关注");
             tv_add_care.setClickable(false);
-        }else{
+        } else {
             tv_add_care.setText("关注");
             tv_add_care.setClickable(true);
         }
@@ -55,16 +60,16 @@ public class AddCareDialogUtil {
 
             @Override
             public void onClick(View v) {
-                if(tv_add_care.getText().equals("关注")){
+                if (tv_add_care.getText().equals("关注")) {
 //                    if(userInfo.get_id()== user_id){
 //                        Toast.makeText(context, "不能关注自己哦", Toast.LENGTH_SHORT).show();
 //                        return;
 //                    }else{
-                        careManager.addCare(userInfo.get_id(), user_id);
-                        Toast.makeText(context, "关注成功", Toast.LENGTH_SHORT).show();
+                    careManager.addCare(userInfo.get_id(), user_id);
+                    Toast.makeText(context, "关注成功", Toast.LENGTH_SHORT).show();
                     //}
-                }else{
-                    careManager.deleteCare(userInfo.get_id(),user_id);
+                } else {
+                    careManager.deleteCare(userInfo.get_id(), user_id);
                     Toast.makeText(context, "取消关注成功", Toast.LENGTH_SHORT).show();
                 }
                 dialog.dismiss();
@@ -73,16 +78,16 @@ public class AddCareDialogUtil {
         tv_message.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isCared){
-                    Toast.makeText(context,"还没关注呢，不能留言",Toast.LENGTH_SHORT).show();
+                if (!isCared) {
+                    Toast.makeText(context, "还没关注呢，不能留言", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(userInfo.get_id()== user_id){
+                if (userInfo.get_id() == user_id) {
                     Toast.makeText(context, "不能给自己留言哦", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 Intent chat_content = new Intent(context, ChatContentActivity.class);
-                chat_content.putExtra("chatUserInfo",userInfo);
+                chat_content.putExtra("chatUserInfo", userInfo);
                 context.startActivity(chat_content);
                 dialog.dismiss();
             }

@@ -44,7 +44,12 @@ public class CareAdapter extends RecyclerView.Adapter<CareAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        Glide.with(context).load(userInfoList.get(i).getUserHead()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(viewHolder.iv_user_head);
+        String userHead = userInfoList.get(i).getUserHead();
+        if (userHead != null && userHead.length() != 0) {
+            Glide.with(context).load(userHead).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(viewHolder.iv_user_head);
+        } else {
+            Glide.with(context).load(R.drawable.user_head_default).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(viewHolder.iv_user_head);
+        }
     }
 
     @Override
