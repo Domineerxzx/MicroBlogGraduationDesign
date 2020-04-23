@@ -17,6 +17,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.domineer.triplebro.microbloggraduationdesign.R;
 import com.domineer.triplebro.microbloggraduationdesign.adapters.CommentAdapter;
 import com.domineer.triplebro.microbloggraduationdesign.adapters.PhotoWallAdapter;
+import com.domineer.triplebro.microbloggraduationdesign.interfaces.OnItemClickListener;
 import com.domineer.triplebro.microbloggraduationdesign.managers.CommentManager;
 import com.domineer.triplebro.microbloggraduationdesign.managers.HotManager;
 import com.domineer.triplebro.microbloggraduationdesign.models.CommentInfo;
@@ -29,7 +30,7 @@ import com.domineer.triplebro.microbloggraduationdesign.views.MyListView;
 
 import java.util.List;
 
-public class IssueContentActivity extends Activity implements View.OnClickListener {
+public class IssueContentActivity extends Activity implements View.OnClickListener, OnItemClickListener {
 
     private IssueInfo issueInfo;
     private List<IssueImageInfo> issueImageInfoList;
@@ -94,6 +95,7 @@ public class IssueContentActivity extends Activity implements View.OnClickListen
         tv_time.setText(issueInfo.getIssueTime());
         tv_issue_content.setText(issueInfo.getIssueContent());
         photoWallAdapter = new PhotoWallAdapter(this, issueImageInfoList);
+        photoWallAdapter.setOnItemClickListener(this);
         rv_hot.setAdapter(photoWallAdapter);
         if(this.userInfo.getUserHead() != null && this.userInfo.getUserHead().length()>0){
             Glide.with(this).load(this.userInfo.getUserHead()).apply(RequestOptions.bitmapTransform(new CircleCrop())).into(iv_user_head);
@@ -129,5 +131,15 @@ public class IssueContentActivity extends Activity implements View.OnClickListen
                 AddCommentDialogUtil.showAddCommentDialog(this, ProjectProperties.ADD_COMMENT, issueInfo,lv_comment,rl_comment,rl_comment_null);
                 break;
         }
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+
+    }
+
+    @Override
+    public void onItemLongClick(View view) {
+
     }
 }

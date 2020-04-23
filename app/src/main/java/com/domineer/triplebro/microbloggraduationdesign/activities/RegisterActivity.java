@@ -30,7 +30,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
     private String username;
     private String request_code;
     private CheckBox cb_agree;
-    private Button bt_admin_register;
+    //private Button bt_admin_register;
     private Button bt_user_register;
     private int userType;
 
@@ -52,7 +52,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
         iv_close_create.setOnClickListener(this);
         bt_create.setOnClickListener(this);
         //bt_request_code.setOnClickListener(this);
-        bt_admin_register.setOnClickListener(this);
+        //bt_admin_register.setOnClickListener(this);
         bt_user_register.setOnClickListener(this);
     }
 
@@ -66,7 +66,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
         //bt_request_code = findViewById(R.id.bt_request_code);
         bt_create = findViewById(R.id.bt_create);
         cb_agree = findViewById(R.id.cb_agree);
-        bt_admin_register = (Button) findViewById(R.id.bt_admin_register);
+        //bt_admin_register = (Button) findViewById(R.id.bt_admin_register);
         bt_user_register = (Button) findViewById(R.id.bt_user_register);
     }
 
@@ -111,7 +111,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                     registerManager.register(phone_number,/* request_code,*/ password, username,userType);
                 }
                 break;
-            case R.id.bt_admin_register:
+            /*case R.id.bt_admin_register:
                 bt_admin_register.setBackgroundResource(R.drawable.shape_user_button);
                 bt_user_register.setBackgroundResource(R.drawable.shape_alpha_card);
                 userType = ProjectProperties.ADMIN;
@@ -120,7 +120,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                 bt_admin_register.setBackgroundResource(R.drawable.shape_alpha_card);
                 bt_user_register.setBackgroundResource(R.drawable.shape_user_button);
                 userType = ProjectProperties.USER;
-                break;
+                break;*/
         }
     }
 }

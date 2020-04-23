@@ -24,22 +24,14 @@ public class RegisterHandler extends Handler {
     @Override
     public void handleMessage(Message msg) {
         switch (msg.what) {
-            case ProjectProperties.GET_REQUEST_CODE_SUCCESS:
-                context.unbindService(serviceConnection);
-                break;
-            case ProjectProperties.GET_REQUEST_CODE_FAILED:
-                context.unbindService(serviceConnection);
-                break;
             case ProjectProperties.REGISTER_SUCCESS:
                 context.unbindService(serviceConnection);
                 ((RegisterActivity) context).finish();
                 break;
+            case ProjectProperties.GET_REQUEST_CODE_SUCCESS:
+            case ProjectProperties.GET_REQUEST_CODE_FAILED:
             case ProjectProperties.REGISTER_FAILED:
-                context.unbindService(serviceConnection);
-                break;
             case ProjectProperties.REGISTER_ADMIN_SUCCESS:
-                Intent adminManagerActivity = new Intent(context, AdminManagerActivity.class);
-                context.startActivity(adminManagerActivity);
                 context.unbindService(serviceConnection);
                 break;
         }

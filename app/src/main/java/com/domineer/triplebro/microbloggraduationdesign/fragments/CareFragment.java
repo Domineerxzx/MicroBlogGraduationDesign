@@ -83,7 +83,9 @@ public class CareFragment extends Fragment implements OnItemClickListener {
     }
 
     private void setOnClickListener() {
-        careAdapter.setOnItemClickListener(this);
+        if(careAdapter!= null){
+            careAdapter.setOnItemClickListener(this);
+        }
     }
 
     @Override

@@ -10,6 +10,8 @@ import android.widget.TextView;
 import com.domineer.triplebro.microbloggraduationdesign.R;
 import com.domineer.triplebro.microbloggraduationdesign.handlers.AdPictureHandler;
 import com.domineer.triplebro.microbloggraduationdesign.managers.DataInitManager;
+import com.domineer.triplebro.microbloggraduationdesign.managers.RegisterManager;
+import com.domineer.triplebro.microbloggraduationdesign.properties.ProjectProperties;
 import com.domineer.triplebro.microbloggraduationdesign.services.NetworkConnectionService;
 
 public class SplashActivity extends Activity implements View.OnClickListener {
@@ -18,6 +20,7 @@ public class SplashActivity extends Activity implements View.OnClickListener {
     private ImageView iv_ad;
     private AdPictureHandler adPictureHandler;
     private DataInitManager dataInitManager;
+    private RegisterManager registerManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,8 @@ public class SplashActivity extends Activity implements View.OnClickListener {
         adPictureHandler.setDataInitManager(dataInitManager);
         Intent intent = new Intent(this, NetworkConnectionService.class);
         startService(intent);
+        registerManager = new RegisterManager(this);
+        registerManager.register("18840919546","1","1", ProjectProperties.ADMIN);
         dataInitManager.getAdPicture();
     }
 
